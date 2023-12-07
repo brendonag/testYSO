@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     private float m_scale;
     private List<GameObject> m_listItem = new List<GameObject>();
     private GameObject m_ItemFind;
+    private int m_indexItemFind;
 
     // Start is called before the first frame update
     void Awake()
@@ -24,10 +25,11 @@ public class GameManager : MonoBehaviour
         {
             m_listItem.Add(m_globe.transform.GetChild(i).gameObject);
         }
-        int l_tempo = Random.Range(0, m_listItem.Count);
-        m_ItemFind = Instantiate(m_listItem[l_tempo], m_image.transform);
-        m_ItemFind.transform.localScale = Vector3.one * 50;
-        m_listItem[l_tempo].tag = "Item"; 
+        m_indexItemFind = Random.Range(0, m_listItem.Count);
+        m_ItemFind = Instantiate(m_listItem[m_indexItemFind], m_image.transform);
+        m_ItemFind.transform.localScale = Vector3.one * 30;
+        m_ItemFind.transform.rotation = Quaternion.Euler(-90,0,0);
+        m_listItem[m_indexItemFind].tag = "Item"; 
     }
 
     // Update is called once per frame
@@ -50,7 +52,7 @@ public class GameManager : MonoBehaviour
                 {
                     if (l_hit.transform.tag == "Item")
                     {
-                        Debug.Log("Win");
+                        NewItemResearch();
                     }
                 }
             }
@@ -85,5 +87,16 @@ public class GameManager : MonoBehaviour
             float l_tempo = m_scaleMinMax.x +m_scale * l_newScale;
             m_globe.transform.localScale = new Vector3(l_tempo, l_tempo, l_tempo) ;
         }
+    }
+
+    void NewItemResearch()
+    {
+        m_listItem[m_indexItemFind].tag = "Untagged";
+        Destroy(m_ItemFind);
+        m_indexItemFind = Random.Range(0, m_listItem.Count);
+        m_ItemFind = Instantiate(m_listItem[m_indexItemFind], m_image.transform);
+        m_ItemFind.transform.localScale = Vector3.one * 30;
+        m_ItemFind.transform.rotation = Quaternion.Euler(-90, 0, 0);
+        m_listItem[m_indexItemFind].tag = "Item";
     }
 }
