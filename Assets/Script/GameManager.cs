@@ -23,7 +23,8 @@ public class GameManager : MonoBehaviour
     {
         for(int i = 0; i < m_globe.transform.childCount;i++)
         {
-            m_listItem.Add(m_globe.transform.GetChild(i).gameObject);
+            if(m_globe.transform.GetChild(i).gameObject.tag != "Wall")
+                m_listItem.Add(m_globe.transform.GetChild(i).gameObject);
         }
         m_indexItemFind = Random.Range(0, m_listItem.Count);
         m_ItemFind = Instantiate(m_listItem[m_indexItemFind], m_image.transform);
@@ -32,6 +33,11 @@ public class GameManager : MonoBehaviour
         m_listItem[m_indexItemFind].tag = "Item"; 
     }
 
+    private void Start()
+    {
+        
+
+    }
     // Update is called once per frame
     void Update()
     {
@@ -52,7 +58,8 @@ public class GameManager : MonoBehaviour
                 {
                     if (l_hit.transform.tag == "Item")
                     {
-                        NewItemResearch();
+                        //NewItemResearch();
+                        StartCoroutine(NewItem());
                     }
                 }
             }
@@ -98,5 +105,14 @@ public class GameManager : MonoBehaviour
         m_ItemFind.transform.localScale = Vector3.one * 30;
         m_ItemFind.transform.rotation = Quaternion.Euler(-90, 0, 0);
         m_listItem[m_indexItemFind].tag = "Item";
+    }
+
+    IEnumerator NewItem()
+    {
+        m_image.GetComponent<Animator>().SetBool("PlayAnimation", true);       
+        yield return new WaitForSeconds(0.75f);
+        NewItemResearch();
+        yield return new WaitForSeconds(0.25f);
+        m_image.GetComponent<Animator>().SetBool("PlayAnimation", false);
     }
 }
